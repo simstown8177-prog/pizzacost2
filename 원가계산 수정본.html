@@ -1,0 +1,250 @@
+!DOCTYPE html
+html lang=ko
+head
+meta charset=UTF-8 
+meta name=viewport content=width=device-width, initial-scale=1.0 
+title피자 원가 계산기title
+
+style
+body {
+  margin 0;
+  background #f5f6f8;
+  font-family -apple-system, BlinkMacSystemFont, Apple SD Gothic Neo, sans-serif;
+}
+
+.hidden { displaynone; }
+
+button {
+  border none;
+  cursor pointer;
+  font-weight 700;
+}
+
+.card {
+  background #fff;
+  border-radius 14px;
+  padding 16px;
+  margin-bottom 12px;
+}
+
+.menu-btn {
+  width 100%;
+  padding 16px;
+  border-radius 12px;
+  margin-bottom 10px;
+  background #f1f1f1;
+  font-size 16px;
+}
+
+.menu-btnhover {
+  background #2ac1bc;
+  color #fff;
+}
+
+.topbar {
+  position sticky;
+  top 0;
+  z-index 50;
+  background #fff;
+  border-bottom 1px solid #eee;
+  padding 12px;
+  transition max-height .3s ease;
+}
+
+.topbar.collapsed {
+  max-height 58px;
+  overflow hidden;
+}
+
+.summary {
+  display grid;
+  grid-template-columns repeat(4,1fr);
+  gap 8px;
+  margin-top 10px;
+}
+
+.summary div {
+  background #fff;
+  border 1px solid #eee;
+  border-radius 12px;
+  padding 10px;
+}
+
+.option {
+  display flex;
+  justify-content space-between;
+  padding 14px 0;
+  border-bottom 1px solid #f0f0f0;
+}
+
+.optionlast-child { border-bottom none; }
+
+.price {
+  font-weight 800;
+}
+
+.toggle-btn {
+  margin-left auto;
+  background #eee;
+  border-radius 999px;
+  padding 6px 12px;
+}
+
+.bottom-btn {
+  position fixed;
+  bottom 0;
+  left 0;
+  right 0;
+  background #2ac1bc;
+  color #fff;
+  font-size 18px;
+  padding 16px;
+  text-align center;
+}
+style
+head
+
+body
+
+!-- 메뉴 선택 화면 --
+div id=menuSelect style=padding16px;
+  div class=card
+    h2메뉴 선택h2
+
+    button class=menu-btn onclick=selectMenu('충성콤비네이션',19900,5800)
+      충성콤비네이션
+    button
+
+    button class=menu-btn onclick=selectMenu('달달고구마',22900,6200)
+      달달고구마
+    button
+
+    button class=menu-btn onclick=selectMenu('반반피자',21900,6000)
+      반반피자
+    button
+
+  div
+div
+
+!-- 계산 화면 --
+div id=calcView class=hidden
+
+  !-- 상단 계산 시트 --
+  div class=topbar id=summaryBar
+    div style=displayflex;align-itemscenter;
+      strong id=menuTitle메뉴strong
+      button class=toggle-btn onclick=toggleSummary()계산표button
+    div
+
+    div class=summary
+      div
+        div판매가div
+        strong id=salePrice0원strong
+      div
+      div
+        div원가div
+        strong id=costPrice0원strong
+      div
+      div
+        div마진div
+        strong id=profit0원strong
+      div
+      div
+        div마진율div
+        strong id=margin0%strong
+      div
+    div
+  div
+
+  !-- 옵션 영역 --
+  div style=padding16px; padding-bottom100px;
+
+    div class=card
+      h3엣지 선택h3
+      div class=option
+        오리지널
+        span class=price+0원span
+      div
+      div class=option onclick=addOption(2500)
+        치즈크러스트
+        span class=price+2,500원span
+      div
+      div class=option onclick=addOption(3000)
+        고구마크러스트
+        span class=price+3,000원span
+      div
+    div
+
+    div class=card
+      h3토핑 추가h3
+      div class=option onclick=addOption(3000)
+        치즈 추가
+        span class=price+3,000원span
+      div
+      div class=option onclick=addOption(2000)
+        페퍼로니 추가
+        span class=price+2,000원span
+      div
+    div
+
+    div class=card
+      button onclick=goBack() class=menu-btn← 메뉴 다시 선택button
+    div
+
+  div
+
+div
+
+div class=bottom-btn
+  담기
+div
+
+script
+let basePrice = 0;
+let baseCost = 0;
+let optionPrice = 0;
+
+function won(n){
+  return n.toLocaleString() + '원';
+}
+
+function selectMenu(name, price, cost){
+  basePrice = price;
+  baseCost = cost;
+  optionPrice = 0;
+
+  document.getElementById('menuTitle').innerText = name;
+  document.getElementById('menuSelect').classList.add('hidden');
+  document.getElementById('calcView').classList.remove('hidden');
+
+  calc();
+}
+
+function addOption(price){
+  optionPrice += price;
+  calc();
+}
+
+function calc(){
+  const sale = basePrice + optionPrice;
+  const profit = sale - baseCost;
+  const margin = ((profit  sale)  100).toFixed(1);
+
+  document.getElementById('salePrice').innerText = won(sale);
+  document.getElementById('costPrice').innerText = won(baseCost);
+  document.getElementById('profit').innerText = won(profit);
+  document.getElementById('margin').innerText = margin + '%';
+}
+
+function toggleSummary(){
+  document.getElementById('summaryBar').classList.toggle('collapsed');
+}
+
+function goBack(){
+  document.getElementById('calcView').classList.add('hidden');
+  document.getElementById('menuSelect').classList.remove('hidden');
+}
+script
+
+body
+html
